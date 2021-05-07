@@ -1,39 +1,54 @@
 to setup
   clear-all
-
   set-default-shape turtles "bug"
 
-
-  ;; distribuzione casuale di cibo
-  ask patches
-  [ if random-float 100 < densita_materiale
-    [ set pcolor yellow ] ]
-
-  reset-ticks
-  ;; distribuzione casuale di termiti
-  create-turtles numero_termiti
-
- ask turtles [
-    set color white
-    setxy random-xcor random-ycor
-    set size 5  ;; più facile da vedere
+  ask patches[
+    if random-float 100 < per_cibo[
+      set pcolor yellow
+    ]
   ]
 
-  reset-ticks
-end
+  crt n_termiti
 
+  ask turtles[
+    set color white
+    setxy random-xcor random-ycor
+    set size 5
+  ]
+end
 
 to go
 
-  ask turtles [cerca-cibo  appoggia-cibo ]
-  tick
+  ask turtles[
+    cerca-cibo
+    appoggia-cibo
+  ]
+
 end
 
 to cerca-cibo
-
   ifelse pcolor = yellow
-  [set pcolor black   set color orange fd rg_inerzia]  ;ramo vero
-  [vaga cerca-cibo]  ; ramo falso
+  [
+    set pcolor black
+    set color orange fd rg_inerzia
+  ]
+  [
+    vaga
+    cerca-cibo
+  ]
+
+end
+
+
+to appoggia-cibo
+  ifelse pcolor = black[
+    set pcolor yellow
+    set color white
+    allontanati
+  ][
+    vaga
+    appoggia-cibo
+  ]
 
 end
 
@@ -43,31 +58,25 @@ to vaga
   fd 1
 end
 
-
-to appoggia-cibo
-ifelse pcolor = black
-  [ set pcolor yellow
-    set color white
-    allontanati]
-  [ vaga
-    appoggia-cibo ]
-end
-
 to allontanati
   rt random 360
   fd rg_libera
-  if pcolor != black
-    [ allontanati]
+  if pcolor = yellow
+  [
+    allontanati
+  ]
 end
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-671
-472
+822
+623
 -1
 -1
-3.0
+4.0
 1
 10
 1
@@ -88,29 +97,12 @@ ticks
 30.0
 
 BUTTON
-23
-10
-97
-62
-NIL
-Setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-97
-10
-174
-62
-NIL
-Go
+11
+13
+74
+46
+setup
+setup
 NIL
 1
 T
@@ -121,39 +113,65 @@ NIL
 NIL
 1
 
-BUTTON
-23
-62
-97
-122
-Step
-let i 1\nwhile [i < numero_step]\n[\n  go\n  set i i + 1\n]\n
-NIL
+SLIDER
+18
+268
+192
+301
+per_cibo
+per_cibo
+0
+100
+55.0
+5
 1
-T
-OBSERVER
 NIL
-NIL
-NIL
-NIL
-1
+HORIZONTAL
 
 INPUTBOX
-13
-227
-103
-287
+9
+354
+98
+414
 rg_inerzia
 20.0
 1
 0
 Number
 
+BUTTON
+110
+13
+173
+46
+go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 INPUTBOX
-103
-227
-195
-287
+9
+420
+205
+480
+angolo_virata
+100.0
+1
+0
+Number
+
+INPUTBOX
+104
+353
+199
+413
 rg_libera
 20.0
 1
@@ -161,56 +179,19 @@ rg_libera
 Number
 
 SLIDER
-11
-134
-197
-167
-densita_materiale
-densita_materiale
+17
+219
+189
+252
+n_termiti
+n_termiti
 0
-100
-20.0
-5
-1
-NIL
-HORIZONTAL
-
-INPUTBOX
-13
-287
-195
-347
-angolo_virata
-100.0
-1
-0
-Number
-
-SLIDER
-11
-167
-197
-200
-numero_termiti
-numero_termiti
-50
 1000
-100.0
-50
+261.0
+1
 1
 NIL
 HORIZONTAL
-
-INPUTBOX
-97
-62
-174
-122
-numero_step
-100.0
-1
-0
-Number
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -554,7 +535,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
